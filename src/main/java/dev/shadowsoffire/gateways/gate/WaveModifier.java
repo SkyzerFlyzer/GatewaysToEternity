@@ -130,7 +130,11 @@ public interface WaveModifier extends CodecProvider<WaveModifier> {
             AttributeInstance inst = entity.getAttribute(this.modifier.attribute());
             if (inst == null) return;
             // TODO: Figure out a better way to generate a random ID (maybe generate a full UUID?) or have users provide an identifier.
-            inst.addPermanentModifier(this.modifier.createDeterministic(Gateways.loc("gateway_random_modifier_" + entity.getRandom().nextInt())));
+            var modifier = this.modifier.createDeterministic(Gateways.loc("gateway_random_modifier_" + entity.getRandom().nextInt()));
+            // Check if modifier already exists to avoid conflicts with other mods (e.g., Apotheosis affixes)
+            if (!inst.hasModifier(modifier.id())) {
+                inst.addPermanentModifier(modifier);
+            }
         }
 
         @Override
